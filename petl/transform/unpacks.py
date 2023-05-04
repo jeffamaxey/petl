@@ -99,8 +99,8 @@ def iterunpack(source, field, newfields, include_original, missing):
             out_row = list(row)
         else:
             out_row = [v for i, v in enumerate(row) if i != field_index]
-        nvals = len(value)
         if nunpack > 0:
+            nvals = len(value)
             if nvals >= nunpack:
                 newvals = value[:nunpack]
             else:

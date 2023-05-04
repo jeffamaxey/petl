@@ -62,8 +62,8 @@ class RenameView(Table):
 
     def __init__(self, table, *args, **kwargs):
         self.source = table
-        if len(args) == 0:
-            self.spec = dict()
+        if not args:
+            self.spec = {}
         elif len(args) == 1:
             self.spec = args[0]
         elif len(args) == 2:
@@ -228,11 +228,8 @@ class PushHeaderView(Table):
         # if user passes header as a list, just use this and ignore args
         if isinstance(header, (list, tuple)):
             self.header = header
-        # otherwise,
         elif len(args) > 0:
-            self.header = []
-            self.header.append(header)  # first argument is named header
-            self.header.extend(args)  # add the other positional arguments
+            self.header = [header, *args]
         else:
             assert False, 'bad parameters'
 
@@ -309,10 +306,8 @@ class PrefixHeaderView(Table):
     def __iter__(self):
         it = iter(self.table)
         hdr = next(it)
-        outhdr = tuple((text_type(self.prefix) + text_type(f)) for f in hdr)
-        yield outhdr
-        for row in it:
-            yield row
+        yield tuple((text_type(self.prefix) + text_type(f)) for f in hdr)
+        yield from it
 
 
 def suffixheader(table, suffix):
@@ -333,10 +328,8 @@ class SuffixHeaderView(Table):
     def __iter__(self):
         it = iter(self.table)
         hdr = next(it)
-        outhdr = tuple((text_type(f) + text_type(self.suffix)) for f in hdr)
-        yield outhdr
-        for row in it:
-            yield row
+        yield tuple((text_type(f) + text_type(self.suffix)) for f in hdr)
+        yield from it
 
 
 def sortheader(table, reverse=False, missing=None):

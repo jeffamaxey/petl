@@ -207,8 +207,8 @@ class XmlView(Table):
                 yield flds
 
                 # setup value getters
-                vmatches = dict()
-                vgetters = dict()
+                vmatches = {}
+                vgetters = {}
                 for f in flds:
                     vmatch = self.vdict[f]
                     if isinstance(vmatch, string_types):
@@ -388,11 +388,10 @@ def _build_xml_header(style, props, root, head, rows, prologue, encoding):
         thb = '{0}{1}{2}\n'.format(tab, thd, tbd)
         return prologue + thb
     enc = encoding.upper() if encoding else 'UTF-8'
-    xml = '<?xml version="1.0" encoding="%s"?>' % enc
+    xml = f'<?xml version="1.0" encoding="{enc}"?>'
     pre = prologue + '\n' if prologue and not root else ''
     pos = '\n' + prologue if prologue and root else ''
-    res = '{0}\n{1}{2}{3}{4}{5}\n'.format(xml, pre, tab, thd, tbd, pos)
-    return res
+    return '{0}\n{1}{2}{3}{4}{5}\n'.format(xml, pre, tab, thd, tbd, pos)
 
 
 def _build_xml_footer(style, epilogue, rows, root):
@@ -411,7 +410,7 @@ def _build_nesting(path, closing, index):
     if '/' not in path:
         return fmt % path
     parts = path.split('/')
-    elements = parts[0:index] if index else parts
+    elements = parts[:index] if index else parts
     if closing:
         elements.reverse()
     tags = [fmt % e for e in elements]
@@ -424,16 +423,14 @@ def _build_cols(style, props, path, is_value):
         return _build_cols_inline(props, path, is_value, True)
     if style == 'name':
         return _build_cols_inline(props, path, is_value, False)
-    if style == 'attribute':
-        return _build_cols_attribs(props, path)
-    return style  # custom
+    return _build_cols_attribs(props, path) if style == 'attribute' else style
 
 
 def _build_cols_inline(props, path, is_value, use_tag):
     parts = path.split('/')
     if use_tag:
         if len(parts) < 2:
-            raise ValueError("Tag not in format 'row/col': %s" % path)            
+            raise ValueError(f"Tag not in format 'row/col': {path}")
         col = parts[-1]
         row = parts[-2:-1][0]
     else:
@@ -443,8 +440,7 @@ def _build_cols_inline(props, path, is_value, use_tag):
     fmt = '<{0}>{1}</{0}>'.format(col, fld)
     cols = [fmt.format(e) for e in props]
     tags = ''.join(cols)
-    res = ' <{0}>{1}</{0}>\n'.format(row, tags)
-    return res
+    return ' <{0}>{1}</{0}>\n'.format(row, tags)
 
 
 def _build_cols_attribs(props, path):
@@ -453,5 +449,4 @@ def _build_cols_attribs(props, path):
     fmt = '{0}="{{{0}}}"'
     cols = [fmt.format(e) for e in props]
     atts = ' '.join(cols)
-    res = ' <{0} {1} />\n'.format(row, atts)
-    return res
+    return ' <{0} {1} />\n'.format(row, atts)

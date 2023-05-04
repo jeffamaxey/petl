@@ -112,15 +112,15 @@ class ProgressViewBase(Table):
                     batchrate = 0
                 v = (n, elapsedtime, rate, batchtime, batchrate)
                 message = self.prefix + \
-                    '%s rows in %.2fs (%s row/s); ' \
-                    'batch in %.2fs (%s row/s)' % v
+                        '%s rows in %.2fs (%s row/s); ' \
+                        'batch in %.2fs (%s row/s)' % v
                 self.print_message(message)
                 batchstart = batchend
                 batchtimemean, batchtimevar = \
-                    onlinestats(batchtime, batchn, mean=batchtimemean,
+                        onlinestats(batchtime, batchn, mean=batchtimemean,
                                  variance=batchtimevar)
                 batchratemean, batchratevar = \
-                    onlinestats(batchrate, batchn, mean=batchratemean,
+                        onlinestats(batchrate, batchn, mean=batchratemean,
                                  variance=batchratevar)
             yield r
 
@@ -146,12 +146,22 @@ class ProgressViewBase(Table):
                 batchratemax = int(self.batchsize / batchtimemin)
             except ZeroDivisionError:
                 batchratemax = 0
-            v = (n, elapsedtime, rate, batchtimemean, batchtimevar**.5,
-                 batchtimemin, batchtimemax, int(batchratemean),
-                 int(batchratevar**.5), int(batchratemin), int(batchratemax))
+            v = (
+                n,
+                elapsedtime,
+                rate,
+                batchtimemean,
+                batchtimevar**0.5,
+                batchtimemin,
+                batchtimemax,
+                int(batchratemean),
+                int(batchratevar**0.5),
+                batchratemin,
+                batchratemax,
+            )
             message = self.prefix + '%s rows in %.2fs (%s row/s); batches in ' \
-                                    '%.2f +/- %.2fs [%.2f-%.2f] ' \
-                                    '(%s +/- %s rows/s [%s-%s])' % v
+                                        '%.2f +/- %.2fs [%.2f-%.2f] ' \
+                                        '(%s +/- %s rows/s [%s-%s])' % v
         else:
             v = (n, elapsedtime, rate)
             message = self.prefix + '%s rows in %.2fs (%s row/s)' % v
@@ -165,10 +175,7 @@ class ProgressView(ProgressViewBase):
     """
 
     def __init__(self, inner, batchsize, prefix, out):
-        if out is None:
-            self.file_object = sys.stderr
-        else:
-            self.file_object = out
+        self.file_object = sys.stderr if out is None else out
         super(ProgressView, self).__init__(inner, batchsize, prefix)
 
     def print_message(self, message):

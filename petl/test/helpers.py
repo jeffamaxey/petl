@@ -75,6 +75,4 @@ def get_env_vars_named(prefix, remove_prefix=True):
             if remove_prefix:
                 varname = varname[varlen:]
             res[varname] = varvalue
-    if len(res) == 0:
-        return None
-    return res
+    return res if res else None

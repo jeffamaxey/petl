@@ -322,4 +322,4 @@ def test_facet_2():
 def test_facet_empty():
     table = (('foo', 'bar'),)
     actual = facet(table, 'foo')
-    eq_(list(), list(actual.keys()))
+    eq_([], list(actual.keys()))

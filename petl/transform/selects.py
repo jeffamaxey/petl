@@ -62,7 +62,7 @@ def select(table, *args, **kwargs):
     missing = kwargs.get('missing', None)
     complement = kwargs.get('complement', False)
 
-    if len(args) == 0:
+    if not args:
         raise ArgumentError('missing positional argument')
     elif len(args) == 1:
         where = args[0]
@@ -494,10 +494,7 @@ def facet(table, key):
 
     """
 
-    fct = dict()
-    for v in set(values(table, key)):
-        fct[v] = selecteq(table, key, v)
-    return fct
+    return {v: selecteq(table, key, v) for v in set(values(table, key))}
 
 
 Table.facet = facet

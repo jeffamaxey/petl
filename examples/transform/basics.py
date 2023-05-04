@@ -208,16 +208,10 @@ table1 = [['foo', 'bar'],
           ['C', 5],
           ['D', 9]]
 def upstream(prv, cur, nxt):
-    if prv is None:
-        return None
-    else:
-        return cur.bar - prv.bar
+    return None if prv is None else cur.bar - prv.bar
 
 def downstream(prv, cur, nxt):
-    if nxt is None:
-        return None
-    else:
-        return nxt.bar - cur.bar
+    return None if nxt is None else nxt.bar - cur.bar
 
 table2 = etl.addfieldusingcontext(table1, 'baz', upstream)
 table3 = etl.addfieldusingcontext(table2, 'quux', downstream)

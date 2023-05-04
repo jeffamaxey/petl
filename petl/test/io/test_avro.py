@@ -110,7 +110,7 @@ else:
         try:
             _write_temp_avro_file(table1, nullable_schema)
         except ValueError as vex:
-            bob = "%s" % vex
+            bob = f"{vex}"
             assert 'Bob' in bob
             return
         assert False, 'Failed schema conversion'
@@ -121,7 +121,7 @@ else:
         try:
             _write_temp_avro_file(table0, schema1)
         except TypeError as tex:
-            joe = "%s" % tex
+            joe = f"{tex}"
             assert 'Joe' in joe
             return
         assert False, 'Failed schema conversion'
@@ -190,9 +190,7 @@ else:
 
     def _utc(year, month, day, hour=0, minute=0, second=0, microsecond=0):
         u = datetime(year, month, day, hour, minute, second, microsecond)
-        if PY3:
-            return u.replace(tzinfo=timezone.utc)
-        return u.replace(tzinfo=pytz.utc)
+        return u.replace(tzinfo=timezone.utc) if PY3 else u.replace(tzinfo=pytz.utc)
 
     def _get_tempfile_path(delete_on_close=False):
         f = NamedTemporaryFile(delete=delete_on_close, mode='r')

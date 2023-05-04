@@ -61,20 +61,20 @@ def iterhashjoin(left, right, lkey, rkey, rlookup, lprefix, rprefix):
 
     lhdr = next(lit)
     rhdr = next(rit)
-    
+
     # determine indices of the key fields in left and right tables
     lkind = asindices(lhdr, lkey)
     rkind = asindices(rhdr, rkey)
-    
+
     # construct functions to extract key values from left table
     lgetk = operator.itemgetter(*lkind)
-    
+
     # determine indices of non-key fields in the right table
     # (in the output, we only include key fields from the left table - we
     # don't want to duplicate fields)
     rvind = [i for i in range(len(rhdr)) if i not in rkind]
     rgetv = rowgetter(*rvind)
-    
+
     # determine the output fields
     if lprefix is None:
         outhdr = list(lhdr)
@@ -100,8 +100,7 @@ def iterhashjoin(left, right, lkey, rkey, rlookup, lprefix, rprefix):
         k = lgetk(lrow)
         if k in rlookup:
             rrows = rlookup[k]
-            for outrow in joinrows(lrow, rrows):
-                yield outrow
+            yield from joinrows(lrow, rrows)
         
         
 def hashleftjoin(left, right, key=None, lkey=None, rkey=None, missing=None,
@@ -158,20 +157,20 @@ def iterhashleftjoin(left, right, lkey, rkey, missing, rlookup, lprefix,
 
     lhdr = next(lit)
     rhdr = next(rit)
-    
+
     # determine indices of the key fields in left and right tables
     lkind = asindices(lhdr, lkey)
     rkind = asindices(rhdr, rkey)
-    
+
     # construct functions to extract key values from left table
     lgetk = operator.itemgetter(*lkind)
-    
+
     # determine indices of non-key fields in the right table
     # (in the output, we only include key fields from the left table - we
     # don't want to duplicate fields)
     rvind = [i for i in range(len(rhdr)) if i not in rkind]
     rgetv = rowgetter(*rvind)
-    
+
     # determine the output fields
     if lprefix is None:
         outhdr = list(lhdr)
@@ -197,8 +196,7 @@ def iterhashleftjoin(left, right, lkey, rkey, missing, rlookup, lprefix,
         k = lgetk(lrow)
         if k in rlookup:
             rrows = rlookup[k]
-            for outrow in joinrows(lrow, rrows):
-                yield outrow
+            yield from joinrows(lrow, rrows)
         else:
             outrow = list(lrow)  # start with the left row
             # extend with missing values in place of the right row
@@ -260,20 +258,20 @@ def iterhashrightjoin(left, right, lkey, rkey, missing, llookup, lprefix,
 
     lhdr = next(lit)
     rhdr = next(rit)
-    
+
     # determine indices of the key fields in left and right tables
     lkind = asindices(lhdr, lkey)
     rkind = asindices(rhdr, rkey)
-    
+
     # construct functions to extract key values from left table
     rgetk = operator.itemgetter(*rkind)
-    
+
     # determine indices of non-key fields in the right table
     # (in the output, we only include key fields from the left table - we
     # don't want to duplicate fields)
     rvind = [i for i in range(len(rhdr)) if i not in rkind]
     rgetv = rowgetter(*rvind)
-    
+
     # determine the output fields
     if lprefix is None:
         outhdr = list(lhdr)
@@ -300,8 +298,7 @@ def iterhashrightjoin(left, right, lkey, rkey, missing, llookup, lprefix,
         k = rgetk(rrow)
         if k in llookup:
             lrows = llookup[k]
-            for outrow in joinrows(rrow, lrows):
-                yield outrow
+            yield from joinrows(rrow, lrows)
         else:
             # start with missing values in place of the left row
             outrow = [missing] * len(lhdr)
